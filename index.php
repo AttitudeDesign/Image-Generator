@@ -40,20 +40,30 @@
 	imagettftext($image, 120, 0, 2418, 2450, $black, 'Rockwell.ttf', $names);
 
 
-	$src2 = imagecreatefromjpeg('http://lorempixel.com/1280/1280/people/Sample Image');
-	$src2width = ImageSx($src2);
-	$src2height = ImageSy($src2);
-	//$png = imagecreatetruecolor($src2width, $src2height);
-	imagesavealpha($src2 , true);
-	$src2Transparency = imagecolorallocatealpha($src2 , 0, 0, 0, 127);
-	imagefill($src2 , 0, 0, $src2Transparency);
+	if(!isset($_GET['image'])) { $src2 = imagecreatefromjpeg('http://lorempixel.com/1280/1280/people/Sample Image'); }
+	else {
+		if(substr($_GET['image'],0,5)!='http:') { $_GET['image'] = 'http://'.$_SERVER['SERVER_NAME'].'/'.$_GET['image']; }
+		$src2 = imagecreatefromjpeg($_GET['image']);
+	}
+	$imgCont = ImageCreateTrueColor(1280,1280);
 
-	$src2 = imagerotate($src2, 5, $src2Transparency);
 	$src2width = ImageSx($src2);
 	$src2height = ImageSy($src2);
-	imagealphablending($src2, false);
-	imagesavealpha($src2, true);
-	ImageCopyResampled($image, $src2, 870, 1650, 0, 0, $src2width, $src2height, $src2width, $src2height);
+	imagecopyresized($imgCont, $src2, 0, 0, 0, 0, 1280, 1280, $src2width, $src2height);
+
+
+	imagesavealpha($imgCont , true);
+	$src2Transparency = imagecolorallocatealpha($imgCont , 0, 0, 0, 127);
+	imagefill($imgCont , 0, 0, $src2Transparency);
+
+	$imgCont = imagerotate($imgCont, 5, $src2Transparency);
+	$imgContwidth = ImageSx($imgCont);
+	$imgContheight = ImageSy($imgCont);
+	imagealphablending($imgCont, false);
+	imagesavealpha($imgCont, true);
+	$src2width = ImageSx($imgCont);
+	$src2height = ImageSy($imgCont);
+	ImageCopyResampled($image, $imgCont, 870, 1650, 0, 0, $src2width, $src2height, $src2width, $src2height);
 
 
 	if(isset($_GET['preview'])) {
@@ -72,7 +82,7 @@
 		}
 
 		$finalImage = ImageCreateTrueColor($nw, $nh);
-		ImageCopyResampled($finalImage, $image, 0, 0, 0, 0, $nw, $nh, $width, $height);
+		ImageCopyResampled($finalImage, $image, -110, -55, 0, 0, $nw+220, $nh+110, $width, $height);
 
 		header("Content-Type: image/png"); 
 		imagepng($finalImage);
