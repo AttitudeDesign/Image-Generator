@@ -46,7 +46,7 @@
 		// If we have a valid information, set it, else just change to "Data here"
 		if(isset($_GET['date'])) { $date = $_GET['date']; } else { $date = 'Date here'; }
 		if(isset($_GET['names'])) { $names = $_GET['names']; } else { $names = 'Names here'; }
-		if(isset($_GET['image'])) { $image = $_GET['image']; } else { $image = 'http://lorempixel.com/1280/1280/people/Sample Image'; }
+		if(isset($_GET['image'])) { $image = $_GET['image']; } else { $image = 'http://lorempixel.com/1280/1120/people/Sample Image'; }
 
 
 		// Print names onto the canvas
@@ -64,10 +64,22 @@
 		$sizes['image']['w'] = ImageSx($imageSrc);
 		$sizes['image']['h'] = ImageSy($imageSrc);
 
-		// Create canvas for the supplied image to sit in
-		$imageCanvas = ImageCreateTrueColor(1280,1280);
 
-		imagecopyresized($imageCanvas, $imageSrc, 0, 0, 0, 0, 1280, 1280, $sizes['image']['w'], $sizes['image']['h']);
+		if((1280 - $sizes['image']['w']) < (1120 - $sizes['image']['h'])) {
+			$s = 1120 / $sizes['image']['h'];
+			$sizes['imageSrc']['w'] = round($sizes['image']['w'] * $s);
+			$sizes['imageSrc']['h'] = round($sizes['image']['h'] * $s);
+		}
+		else {
+			$s = 1280 / $sizes['image']['w'];
+			$sizes['imageSrc']['w'] = round($sizes['image']['w'] * $s);
+			$sizes['imageSrc']['h'] = round($sizes['image']['h'] * $s);
+		}
+
+		// Create canvas for the supplied image to sit in
+		$imageCanvas = ImageCreateTrueColor(1280,1120);
+
+		imagecopyresized($imageCanvas, $imageSrc, 0, 0, 0, 0, $sizes['imageSrc']['w'], $sizes['imageSrc']['h'], $sizes['image']['w'], $sizes['image']['h']);
 
 		// Prep the image for rotation
 		$canvasTrans = imagecolorallocatealpha($imageCanvas , 0, 0, 0, 127);
