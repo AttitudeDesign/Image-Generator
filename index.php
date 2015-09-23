@@ -79,7 +79,12 @@
 		// Create canvas for the supplied image to sit in
 		$imageCanvas = ImageCreateTrueColor(1280,1120);
 
-		imagecopyresized($imageCanvas, $imageSrc, 0, 0, 0, 0, $sizes['imageSrc']['w'], $sizes['imageSrc']['h'], $sizes['image']['w'], $sizes['image']['h']);
+		// Adjust the image position if the width or height is too big, to place the image in the centre
+		if($sizes['imageSrc']['w']>1280) { $newX = -(($sizes['imageSrc']['w']-1280)/2); } else { $newX = 0; }
+		if($sizes['imageSrc']['h']>1120) { $newY = -(($sizes['imageSrc']['h']-1120)/2); } else { $newY = 0; }
+
+		// Copy image source onto the canvas
+		imagecopyresized($imageCanvas, $imageSrc, $newX, $newY, 0, 0, $sizes['imageSrc']['w'], $sizes['imageSrc']['h'], $sizes['image']['w'], $sizes['image']['h']);
 
 		// Prep the image for rotation
 		$canvasTrans = imagecolorallocatealpha($imageCanvas , 0, 0, 0, 127);
