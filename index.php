@@ -50,11 +50,11 @@
 
 
 		// Print names onto the canvas
-		imagettftext($printCanvas, 120, 0, 2418, 2450, $colours['black'], 'Rockwell.ttf', $names);
+		imagettftext($printCanvas, 120, 0, 2418, 2490, $colours['black'], 'Rockwell.ttf', $names);
 
 		// Print date onto the canvas, make the end of it match up to the end of "Established" above
 		$type_space = imagettfbbox(120, 0, 'Rockwell.ttf', $date);
-		imagettftext($printCanvas, 120, 0, 3750-$type_space[4], 1350, $colours['black'], 'Rockwell.ttf', $date);
+		imagettftext($printCanvas, 120, 0, 3750-$type_space[4], 1360, $colours['black'], 'Rockwell.ttf', $date);
 
 		// Ascertain if this is a external image, and if not, add on the current server address	
 		if(substr($image,0,4)!='http') { $image = 'http://'.$_SERVER['SERVER_NAME'].'/'.$image; }
